@@ -17,16 +17,17 @@
 <body>
   <div id="oplayer"></div>
 
-  <script type="module">
-    import OPlayer from 'https://cdn.jsdelivr.net/npm/@oplayer/core@1.2.38-beta.2/dist/index.min.mjs';
-    import dashjs from 'https://cdn.jsdelivr.net/npm/dashjs@latest/dist/dash.all.min.js';
+  <!-- Load dash.js and OPlayer (non-module version) -->
+  <script src="https://cdn.jsdelivr.net/npm/dashjs@latest/dist/dash.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@oplayer/core@1.2.38-beta.2/dist/index.iife.min.js"></script>
 
-    const player = OPlayer({
+  <script>
+    const player = window.OPlayer({
       container: '#oplayer',
       source: {
         src: 'https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/cyjhxqdaqh/out/v1/manifest.mpd',
         type: 'dash',
-        customType: (video, source) => {
+        customType: function(video, source) {
           const dash = dashjs.MediaPlayer().create();
           dash.initialize(video, source.src, true);
           dash.setProtectionData({
