@@ -2,20 +2,27 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>Shaka Player with Clearkey</title>
+  <title>Live Match Player</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.10/shaka-player.compiled.min.js"></script>
   <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+    }
     #video {
       width: 100%;
       max-width: 720px;
       border: 3px solid red;
       border-radius: 8px;
-      margin: auto;
+      margin: 20px auto;
       display: block;
     }
   </style>
 </head>
 <body>
+  <h2>লাইভ ম্যাচ প্লেয়ার</h2>
   <video id="video" controls autoplay></video>
 
   <script>
@@ -25,11 +32,11 @@
 
       // Clearkey config
       const clearkey = {
-        "keyIds": ["198f0a6dcd8efcfc29e9a70d5c484d88"],
+        "keyIds": ["63ac662dde310cfb4cc6f9b43b34196d"],
         "keys": [{
           "kty": "oct",
-          "kid": "198f0a6dcd8efcfc29e9a70d5c484d88",
-          "k": "e9e0b56236c882b7176c894ae1ea7285"
+          "kid": "63ac662dde310cfb4cc6f9b43b34196d",
+          "k": "ae26845bd33038a9c0774a0981007294"
         }]
       };
 
@@ -42,7 +49,7 @@
       });
 
       try {
-        await player.load('https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/cyjhxqdaqh/out/v1/manifest.mpd');
+        await player.load('https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/wf8usag51e/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd');
         console.log('The video has been loaded!');
       } catch (e) {
         console.error('Error loading video:', e);
