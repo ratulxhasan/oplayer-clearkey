@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>Live Match Player</title>
+  <title>Shaka Player with Clearkey</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.10/shaka-player.compiled.min.js"></script>
   <style>
     body {
@@ -30,14 +30,9 @@
       const video = document.getElementById('video');
       const player = new shaka.Player(video);
 
-      // Clearkey config
+      // ✅ Correct Clearkey format: keyId: key
       const clearkey = {
-        "keyIds": ["63ac662dde310cfb4cc6f9b43b34196d"],
-        "keys": [{
-          "kty": "oct",
-          "kid": "63ac662dde310cfb4cc6f9b43b34196d",
-          "k": "ae26845bd33038a9c0774a0981007294"
-        }]
+        "63ac662dde310cfb4cc6f9b43b34196d": "ae26845bd33038a9c0774a0981007294"
       };
 
       shaka.polyfill.installAll();
@@ -50,9 +45,9 @@
 
       try {
         await player.load('https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/wf8usag51e/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd');
-        console.log('The video has been loaded!');
+        console.log('✅ Video loaded successfully!');
       } catch (e) {
-        console.error('Error loading video:', e);
+        console.error('❌ Error loading video:', e);
       }
     }
 
