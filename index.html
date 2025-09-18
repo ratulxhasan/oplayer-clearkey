@@ -2,47 +2,54 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>Live Match Player</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@oplayer/core@1.2.38-beta.2/dist/index.min.css" />
+  <title>Shaka Player with Clearkey</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.10/shaka-player.compiled.min.js"></script>
   <style>
-    #oplayer {
+    #video {
+      width: 100%;
+      max-width: 720px;
       border: 3px solid red;
       border-radius: 8px;
-      padding: 5px;
-      max-width: 100%;
       margin: auto;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <div id="oplayer"></div>
-
-  <!-- Load dash.js and OPlayer (non-module version) -->
-  <script src="https://cdn.jsdelivr.net/npm/dashjs@latest/dist/dash.all.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@oplayer/core@1.2.38-beta.2/dist/index.iife.min.js"></script>
+  <video id="video" controls autoplay></video>
 
   <script>
-    const player = window.OPlayer({
-      container: '#oplayer',
-      source: {
-        src: 'https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/cyjhxqdaqh/out/v1/manifest.mpd',
-        type: 'dash',
-        customType: function(video, source) {
-          const dash = dashjs.MediaPlayer().create();
-          dash.initialize(video, source.src, true);
-          dash.setProtectionData({
-            "org.w3.clearkey": {
-              clearkeys: {
-                "198f0a6dcd8efcfc29e9a70d5c484d88": "e9e0b56236c882b7176c894ae1ea7285"
-              }
-            }
-          });
+    async function initPlayer() {
+      const video = document.getElementById('video');
+      const player = new shaka.Player(video);
+
+      // Clearkey config
+      const clearkey = {
+        "keyIds": ["198f0a6dcd8efcfc29e9a70d5c484d88"],
+        "keys": [{
+          "kty": "oct",
+          "kid": "198f0a6dcd8efcfc29e9a70d5c484d88",
+          "k": "e9e0b56236c882b7176c894ae1ea7285"
+        }]
+      };
+
+      shaka.polyfill.installAll();
+
+      player.configure({
+        drm: {
+          clearKeys: clearkey
         }
-      },
-      autoplay: true,
-      controls: true,
-      lang: 'bn'
-    });
+      });
+
+      try {
+        await player.load('https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/cyjhxqdaqh/out/v1/manifest.mpd');
+        console.log('The video has been loaded!');
+      } catch (e) {
+        console.error('Error loading video:', e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initPlayer);
   </script>
 </body>
 </html>
