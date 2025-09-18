@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Match Player</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@oplayer/core@1.2.38-beta.2/dist/index.min.css" />
+  <style>
+    #oplayer {
+      border: 3px solid red;
+      border-radius: 8px;
+      padding: 5px;
+      max-width: 100%;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="oplayer"></div>
+
+  <script type="module">
+    import OPlayer from 'https://cdn.jsdelivr.net/npm/@oplayer/core@1.2.38-beta.2/dist/index.min.mjs';
+    import dashjs from 'https://cdn.jsdelivr.net/npm/dashjs@latest/dist/dash.all.min.js';
+
+    const player = OPlayer({
+      container: '#oplayer',
+      source: {
+        src: 'https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/cyjhxqdaqh/out/v1/manifest.mpd',
+        type: 'dash',
+        customType: (video, source) => {
+          const dash = dashjs.MediaPlayer().create();
+          dash.initialize(video, source.src, true);
+          dash.setProtectionData({
+            "org.w3.clearkey": {
+              clearkeys: {
+                "198f0a6dcd8efcfc29e9a70d5c484d88": "e9e0b56236c882b7176c894ae1ea7285"
+              }
+            }
+          });
+        }
+      },
+      autoplay: true,
+      controls: true,
+      lang: 'bn'
+    });
+  </script>
+</body>
+</html>
