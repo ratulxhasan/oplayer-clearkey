@@ -2,56 +2,76 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <title>Shaka Player with Clearkey</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.10/shaka-player.compiled.min.js"></script>
+  <title>লাইভ ম্যাচ প্লেয়ার</title>
+
+  <!-- UI & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@oplayer/ui@1.3.4-beta.8/dist/index.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+
   <style>
     body {
       background-color: #000;
       color: #fff;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
     }
-    #video {
-      width: 100%;
-      max-width: 720px;
+    #oplayer {
       border: 3px solid red;
-      border-radius: 8px;
+      border-radius: 10px;
+      padding: 10px;
+      max-width: 720px;
       margin: 20px auto;
-      display: block;
     }
   </style>
 </head>
 <body>
-  <h2>লাইভ ম্যাচ প্লেয়ার</h2>
-  <video id="video" controls autoplay></video>
+  <h2><i class="fas fa-tv"></i> লাইভ ম্যাচ প্লেয়ার</h2>
+  <div id="oplayer"></div>
+
+  <!-- Scripts: Load in correct order -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@oplayer/plugins@latest/dist/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@oplayer/full@latest/dist/index.min.js"></script>
 
   <script>
-    async function initPlayer() {
-      const video = document.getElementById('video');
-      const player = new shaka.Player(video);
-
-      // ✅ Correct Clearkey format: keyId: key
-      const clearkey = {
-        "63ac662dde310cfb4cc6f9b43b34196d": "ae26845bd33038a9c0774a0981007294"
-      };
-
-      shaka.polyfill.installAll();
-
-      player.configure({
-        drm: {
-          clearKeys: clearkey
-        }
+    // Ensure OPlugins is available
+    if (window.OPlayer && window.OPlugins) {
+      const player = window.OPlayer({
+        container: '#oplayer',
+        source: {
+          src: 'https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/wf8usag51e/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd',
+          type: 'dash',
+          customType: function(video, source) {
+            const shaka = new shaka.Player(video);
+            shaka.configure({
+              drm: {
+                clearKeys: {
+                  "63ac662dde310cfb4cc6f9b43b34196d": "ae26845bd33038a9c0774a0981007294"
+                }
+              }
+            });
+            shaka.load(source.src).then(() => {
+              console.log("✅ Clearkey stream loaded");
+            }).catch((e) => {
+              console.error("❌ Stream error", e);
+            });
+          }
+        },
+        autoplay: true,
+        controls: true,
+        lang: 'bn',
+        plugins: [
+          window.OPlugins.ui(),
+          window.OPlugins.keyboard(),
+          window.OPlugins.autoplay(),
+          window.OPlugins.loading(),
+          window.OPlugins.volume(),
+          window.OPlugins.playbackRate()
+        ]
       });
-
-      try {
-        await player.load('https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/clients/dash/enc/wf8usag51e/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd');
-        console.log('✅ Video loaded successfully!');
-      } catch (e) {
-        console.error('❌ Error loading video:', e);
-      }
+    } else {
+      console.error("❌ OPlayer or OPlugins not loaded correctly");
     }
-
-    document.addEventListener('DOMContentLoaded', initPlayer);
   </script>
 </body>
 </html>
